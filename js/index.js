@@ -25,11 +25,15 @@ const gameBoard = (function() {
                                         item => 
                                         (item === true)
                                         );
+    
+    // reset gameBoard to default values of false
+    const resetGameBoard = () => gameBoardArray.map(item => item = false);
 
     return { gameBoardArray,
              getGameBoardItem,
              updateGameBoard,
              isGameBoardFilledUp,
+             resetGameBoard,
             };
 })();
 
@@ -39,4 +43,38 @@ function createUser(name) {
     const getTictactoeName = () => tictactoeName;
 
     return {name, getTictactoeName};
+}
+
+// Player
+// The marker can be either 'X' or 'O'
+// The marker ('X' or 'O') can be the value on the button
+function createPlayer(marker) {
+    // Initial score for a player
+    // This score will be increased by 1 if he wins a game
+    const score = 0;
+
+    // This array contains the boxes on the board player ticked
+    // The values will be gotten from the id on each box
+    const moves = [];
+
+    // index is the id of the box the player ticked
+    // only add a move if the move is valid and if the board is not filled up
+    const makeMove = (index) => {
+        if (!gameBoard.isGameBoardFilledUp() && 
+            !gameBoard.getGameBoardItem(index)) {
+            // add the id to the 'moves'
+            moves.push(index); 
+            gameBoard.updateGameBoard(index);
+        }
+    };
+
+    // since a winner can be found only after 3 moves
+    const getTotalMoves = () => {
+        if (moves.length >= 3) {
+           return moves.reduce(
+            (accumulator, currentValue) => accumulator + currentValue)
+        }
+    };
+
+    return { marker, getTotalMoves, makeMove, score };
 }
