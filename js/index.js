@@ -32,3 +32,11 @@ const gameBoard = (function() {
              isGameBoardFilledUp,
             };
 })();
+
+// User
+function createUser(name) {
+    const tictactoeName = "@" + name;
+    const getTictactoeName = () => tictactoeName;
+
+    return {name, getTictactoeName};
+}
