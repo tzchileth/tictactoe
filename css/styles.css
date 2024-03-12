@@ -1,0 +1,56 @@
+
+
+body {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+}
+
+.gameContainer {
+    margin: 0 auto;
+    display: inline-grid;
+    grid-template-columns: 1fr;
+    justify-items: center; 
+    background-color: rgb(117, 109, 59);
+    gap: 10px;
+}
+
+.gameContainer>.firstRow {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns:300px 300px;
+    grid-auto-flow: column;
+    gap: 100px;
+}
+
+.gameContainer>.firstRow>.left {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 30px;
+}
+
+.gameContainer>.firstRow>.right {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 30px;
+}
+
+button {
+    background: #3882F6;
+    color: white;
+    font-family: Roboto, sans-serif;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    margin: 0;
+    font-size: 40px;
+}
+
+.gameContainer>.firstRow p{
+    display: grid;
+    color: white;
+    font-weight: bold;
+    font-size: 25px;
+    height: 10px;
+    align-content: center;
+}
