@@ -85,7 +85,7 @@ function createUser(name) {
 // Player
 // The marker can be either 'X' or 'O'
 // The marker ('X' or 'O') can be the value on the button
-function createPlayer(marker) {
+function createPlayer(marker="X") {
     // Initial score for a player
     // This score will be increased by 1 if he wins a game
     const score = 0;
