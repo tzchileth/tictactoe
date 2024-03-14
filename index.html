@@ -9,21 +9,35 @@
 </head>
 <body>
     <div class="gameContainer">
+        <div class="header">Imisi Tic-Tac-Toe</div>
         <div class="firstRow">
             <div class="left">
                 <button class="xButton" id="x">&#10005;</button>
-                <p id="xScore">200</p>
+                <p id="xScore">_</p>
             </div>
             <div class="right">
                 <button class="yButton" id="o">&#79;</button>
-                <p id="oScore">0</p>
+                <p id="oScore">_</p>
             </div>
             <!-- end of first row -->
         </div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+        <div class="info" id="gameInfo"><span id="nextTurn">Start game or select player</span></div>
+<!-- Next line should be created dynamically in JS file -->
+        <div class="article" id="article">
+            <div class="box" id="b0"></div>
+            <div class="box" id="b1"></div>
+            <div class="box" id="b2"></div>
+            <div class="box" id="b3"></div>
+            <div class="box" id="b4"></div>
+            <div class="box" id="b5"></div>
+            <div class="box" id="b6"></div>
+            <div class="box" id="b7"></div>
+            <div class="box" id="b8"></div>
+        </div>
+        <!--Stop  -->
+        <div class="restart" id="restart">Restart Game</div>
+        <div class="footer">Copyright &#169; Machemileche 2024</div>
     </div>
+      
 </body>
 </html>
