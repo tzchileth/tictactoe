@@ -1,4 +1,5 @@
 // IIFE (module pattern) for gameBoard
+
 const gameBoard = (function() {
     // Initial state of the gameBoard when nobody has played yet.
     let gameBoardArray = [false, false, false,
@@ -14,7 +15,7 @@ const gameBoard = (function() {
     // will be the id on each box in the gameBoard
     // Update a box with 'X' or 'O' if the current value is false
     const updateGameBoard = (index) => {
-        if (!getGameBoardItem[index]) {
+        if (getGameBoardItem(index) === false) {
             gameBoardArray[index] = true; 
         }
     };
@@ -85,7 +86,7 @@ function createUser(name) {
 // Player
 // The marker can be either 'X' or 'O'
 // The marker ('X' or 'O') can be the value on the button
-function createPlayer(marker="X") {
+function createPlayer(marker="&#10005;") {
     // Initial score for a player
     // This score will be increased by 1 if he wins a game
     const score = 0;
@@ -98,10 +99,11 @@ function createPlayer(marker="X") {
     // only add a move if the move is valid and if the board is not filled up
     const makeMove = (index) => {
         if (!gameBoard.isGameBoardFilledUp() && 
-            !gameBoard.getGameBoardItem(index)) {
+            !gameBoard.getGameBoardItem(index))
+             {
             // add the id to the 'moves'
             moves.push(index); 
-            gameBoard.updateGameBoard(index);
+            // gameBoard.updateGameBoard(index);
         }
     };
 
@@ -126,18 +128,35 @@ function createPlayer(marker="X") {
 }
 
 // Game: The game is between a human and computer
-const game = (function() {
+const game = (function(doc) {
     // winningMoves object
     const winningMoves = {
-        3: [0, 1, 2],
-        9: [0, 3, 6],
-        12: [[0, 4, 8], [1, 4, 7], [2, 4, 6], [3, 4, 5]],
-        15: [2, 5, 8],
-        21: [6, 7, 8],
+        three: [0, 1, 2],
+        nine: [0, 3, 6],
+        zero48: [0, 4, 8],
+        one47: [1, 4, 7],
+        two46: [2, 4, 6],
+        three45: [3, 4, 5],
+        fifteen: [2, 5, 8],
+        twenty1: [6, 7, 8],
     };
- 
-        const playerOne = createPlayer("X"); // update this line to get the marker from the button element
-        const playerTwo = createPlayer("O"); // update this line to get the marker from the button element
+
+    let x;
+    let y;
+    let xScore;
+    let oScore;
+    // wrap this in a function
+    if (!!doc) {
+        x = doc.querySelector(".xButton");
+        y = doc.querySelector(".yButton");
+        xScore = doc.querySelector("#xScore");
+        oScore = doc.querySelector("#oScore");
+    }
+
+        const playerOne = createPlayer(); // update this line to get the marker from the button element
+        const playerTwo = createPlayer(); // update this line to get the marker from the button element
+        const restart = doc.querySelector("#restart");
+        
         let winnerFound = false;  // initially no winner yet
         let isGameDraw = false;   // initially set to false
         let playerOneTurn = true;   // to keep track of whose turn to make a move 
@@ -145,23 +164,57 @@ const game = (function() {
         let playerOneWon = false;
         let playerTwoWon = false;
         let winningPattern = "";
-        let count = 1;
+        let count = 0;
+
+        restart.addEventListener("click", () => {
+            restartGame();
+        });
 
         const play = () => {
-            // keep playing game is it's not a tie and there's no winner yet
-            while (!winnerFound && count <= 9) {
+            const board = doc.querySelector(".article");
+            let index;
+           
+            board.addEventListener("click", (e) => {
+                let id = e.target.id;
+                index = Number(id.slice(1));
+
+                 // keep playing game is it's not a tie and there's no winner yet
+            if (!winnerFound && count < 10) {
+                console.log(count);
                 if (playerOneTurn && !winnerFound) {
+                    console.log("yes");
                     let movesArrayLength = playerOne.movesLength();
-                    // get the index as an id using event listener on the DOM
-                    // prompt player1 to input an available slot
-                    let index = Number(prompt("Player One: Enter an integer between 0 & 8: "));
                     playerOne.makeMove(index);
+                    console.log(index);
+
+                    // check if move is valid and update board
+                    if (!gameBoard.getGameBoardItem(index)) {
+                        gameBoard.updateGameBoard(index);
+                        let box = doc.querySelector(`#${id}`);
+                        box.innerHTML = "&#10005;" 
+                        console.log("X updated");
+                    }
+                   
                     // check if playerOne won
                     if (checkForWinner(playerOne)) {
                         winnerFound = true;
                         playerOneWon = true;
+                        count = 9;
                         playerOne.score++;
-                        console.log("Player 1 won");
+                        xScore.textContent = playerOne.score;
+                        // highlight winning cells
+                        let winningCells = updateResult().winningPattern;
+
+                        winningCells.forEach(cell => {
+                            let elem = doc.querySelector(`#b${cell}`);
+                            elem.classList.toggle("playerOneWon");
+                            elem.style.border = "3px solid #bda314";
+                            
+                        });
+
+                        console.log(winningCells);
+
+                        console.log("Player 1 won", playerOneWon);
                         return;
                     }
                     // check that playerOne has actually played
@@ -171,21 +224,42 @@ const game = (function() {
                         // make next player to be player 2
                         playerTwoTurn = true;
                         count++;
-                        }
+                    }
                 } 
                 else if (playerTwoTurn && !winnerFound) {
                             let movesArrayLength = playerTwo.movesLength();
-                            // get the index as an id using event listener on the DOM
-                            let index = Number(prompt("Player Two: Enter an integer between 0 & 8: "));
                             playerTwo.makeMove(index);
+
+                            if (!gameBoard.getGameBoardItem(index)) {
+                                gameBoard.updateGameBoard(index);
+                                let box = doc.querySelector(`#${id}`);
+                                box.innerHTML = "&#79;"
+                                console.log("O updated");
+                            }
+                         
                             // playerTwo.makeMove(getComputerChoice());
                             // check if playerOne won
                             if (checkForWinner(playerTwo)) {
-                                // winner found
                                 winnerFound = true;
                                 playerTwoWon = true;
+                                count = 9;
                                 playerTwo.score++;
-                                console.log("Player 2 won");
+                                oScore.textContent = playerTwo.score;
+                                // highlight winning cells
+                                let winningCells = updateResult().winningPattern;
+                                winningCells.forEach(cell => {
+                                    let elem = doc.querySelector(`#b${cell}`);
+                                    console.log(elem);
+
+                                    elem.classList.toggle("playerTwoWon");
+                                    elem.style.border = "3px solid #600606";
+
+                            });
+
+                                console.log(count);
+                                console.log("Player 2 won", playerTwoWon);
+                                console.log(count);
+
 
                                 return;
                             }
@@ -198,19 +272,30 @@ const game = (function() {
                             playerOneTurn = true;
                             count++;
                         }
-                } 
+                }
+
+                // check if it's a tie
+                if (count === 9 && playerOneWon === false && playerTwoWon === false) {
+                    isGameDraw = true;
+                    console.log("It's a tie", isGameDraw);
+                    
+                    console.log(count);
+
+                    count++;
+                    return;
+                }
             }
+            });
         }
 
-    // display the result
-    const displayResult = () => {
-        if (winningPattern === "") {
-            isGameDraw = true;
-        }
+   // get game result
+    const updateResult = () => {
         return { playerOneWon, playerTwoWon, isGameDraw, winningPattern };
     }
 
-    const resetGameValues = () => {
+    // const resetGameValues
+    const restartGame = () => {
+        const boxes = doc.querySelectorAll(".box");
         winnerFound = false;  
         isGameDraw = false;   
         playerOneTurn = true;   
@@ -218,31 +303,34 @@ const game = (function() {
         playerOneWon = false;
         playerTwoWon = false;
         winningPattern = "";
-        count = 1;
+        gameBoard.resetGameBoard();
+        game.playerOne.clearMoves();
+        game.playerTwo.clearMoves();
+        count = 0;
+
+        boxes.forEach(box => {
+            box.textContent = "";
+            box.classList.remove("playerTwoWon");
+            box.classList.remove("playerOneWon");
+            box.style.border = "3px solid #fff";
+        });
+        game.play();
     };
 
     const checkForWinner = function(player) {
         let difference;
         let win = false;
-        for (const key in winningMoves) {
-            if (key !== "12") {
-                difference = winningMoves[key].
-                filter(x => player.moves.indexOf(x) < 0);
-                if(difference.length === 0) {
-                    win = true;
-                    winningPattern =  {moves: winningMoves[key]};
-                    return win;
-                }
-            }
-            if (key === "12") {
-                for (let i = 0; i < winningMoves["12"].length; i++) {
-                    difference =  winningMoves["12"][i].
-                    filter(item => player.moves.indexOf(item) < 0);
-                    if (difference.length === 0) {
+        if (player.movesLength() >= 3) {
+            for (const key in winningMoves) {
+                    difference = winningMoves[key].
+                    filter(x => player.moves.indexOf(x) < 0);
+                    console.log(difference.length);
+    
+                    if(difference.length === 0) {
                         win = true;
-                        winningPattern =  {moves: winningMoves[12][i]};
-                        return true;
-                    }
+                        winningPattern =  winningMoves[key];
+                        updateResult()["winningPattern"] = winningPattern;
+                        return win;
                 }
             }
         }
@@ -259,5 +347,7 @@ const game = (function() {
     return index; // this slot is available
     }
 
-    return { play, displayResult, resetGameValues, playerOne, playerTwo, winningPattern };
-})();
+    return { play, restartGame, playerOne, playerTwo, updateResult };
+})(document);
+
+// playerOneWon, playerTwoWon, isGameDraw, winningPattern 
