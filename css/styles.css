@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 
 body {
@@ -16,15 +17,22 @@ body {
     justify-items: center; 
     gap: 10px;
     background-color: rgb(139, 35, 180);
+    border-radius: 15px;
 }
 
 .gameContainer >.header {
     display: grid;
     justify-content: center;
     width: 100%;
-    color: #ffffff;
-    background-color: rgb(165, 157, 134);
+    color: #4e0a0a;
+    background-color: rgb(255, 255, 255);
     font-size: 30px;
+    font-weight: bold;
+    margin-left: 30px;
+    margin-right: 30px;
+
+border-radius: 15px;
+    font-family: Roboto, sans-serif;
 }
 
 .gameContainer>.firstRow {
@@ -91,7 +99,7 @@ button {
     grid-auto-rows: 1fr;
 }
 
-.gameContainer>.article div {
+.gameContainer>.article .box {
     border: 3px solid rgb(255, 255, 255);
     padding: 30px 30px;
     color: #ffffff;
@@ -125,4 +133,13 @@ button {
     color: rgb(255, 255, 255);
     font-weight: bold;
     padding: 10px;
+}
+
+.message {
+    display: grid;
+    grid-template-columns: 300px;
+    justify-items: center;
+    color: rgb(44, 4, 4);
+    font-style: italic;
+    font-size: 20px;
 }
