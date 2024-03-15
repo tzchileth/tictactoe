@@ -40,7 +40,7 @@ border-radius: 15px;
     grid-template-columns:300px 300px;
     grid-auto-flow: column;
     gap: 100px;
-    background-color: rgb(117, 109, 59);
+    /* background-color: rgb(117, 109, 59); */
 
 }
 
@@ -51,8 +51,8 @@ border-radius: 15px;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #f5f5dc;
-    border: 1px solid #f5f5dc;
     border-bottom:2px solid #10a528;
+    background-color: #575b61;
 
 }
 
@@ -62,6 +62,8 @@ border-radius: 15px;
     gap: 30px;
     border: 1px solid #f5f5dc;
     border-bottom:2px solid #5e0606;
+    background-color: #575b61;
+
     padding: 10px;
     border-radius: 5px;
 }
@@ -118,7 +120,7 @@ button {
 }
 
 .playerTwoWon {
-    background-color:#72630c;
+    background-color:#0a0900;
 }
 .playerTwoWonBorder {
     border: 3px solid #600606;
