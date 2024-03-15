@@ -99,6 +99,8 @@ function createPlayer(marker = "&#10005;") {
   // This score will be increased by 1 if he wins a game
   const score = 0;
 
+  const playerStatus = false;
+
   // This array contains the boxes on the board player ticked
   // The values will be gotten from the id on each box
   const moves = [];
@@ -112,7 +114,6 @@ function createPlayer(marker = "&#10005;") {
     ) {
       // add the id to the 'moves'
       moves.push(index);
-      // gameBoard.updateGameBoard(index);
     }
   };
 
@@ -142,12 +143,12 @@ function createPlayer(marker = "&#10005;") {
     movesLength,
     clearMoves,
     score,
+    playerStatus,
   };
 }
 
 // Game: The game is between a human and computer
 const game = (function (doc) {
-  // winningMoves object
   const winningMoves = {
     three: [0, 1, 2],
     nine: [0, 3, 6],
@@ -161,18 +162,42 @@ const game = (function (doc) {
 
   let x;
   let y;
+  let btn;
   let xScore;
   let oScore;
+  let XSCORE = 0;
+  let OSCORE = 0;
+
   // wrap this in a function
   if (!!doc) {
-    x = doc.querySelector(".xButton");
-    y = doc.querySelector(".yButton");
+    btn = doc.querySelectorAll("button");
+    xButton = doc.querySelector(".xButton");
+    yButton = doc.querySelector(".yButton");
     xScore = doc.querySelector("#xScore");
     oScore = doc.querySelector("#oScore");
   }
 
-  const playerOne = createPlayer(); // update this line to get the marker from the button element
-  const playerTwo = createPlayer(); // update this line to get the marker from the button element
+  let playerOne = createPlayer(); // update this line to get the marker from the button element
+  let playerTwo = createPlayer("&#79;"); // update this line to get the marker from the button element
+
+  xButton.addEventListener("click", () => {
+    if (!playerOne.playerStatus && !playerTwo.playerStatus) {
+      playerOne.playerStatus = true;
+      playerOne.marker = "&#10005;";
+      playerTwo.marker = "&#79;";
+      game.play();
+    }
+  });
+
+  yButton.addEventListener("click", () => {
+    if (!playerTwo.playerStatus && !playerOne.playerStatus) {
+      playerTwo.playerStatus = true;
+      playerTwo.marker = "&#10005;";
+      playerOne.marker = "&#79;";
+      game.play();
+    }
+  });
+
   const restart = doc.querySelector("#restart");
 
   let winnerFound = false; // initially no winner yet
@@ -189,6 +214,8 @@ const game = (function (doc) {
   });
 
   const play = () => {
+    console.log(`playerOne: ${playerOne.score}  playerTwo: ${playerTwo.score}`);
+
     const board = doc.querySelector(".article");
     let index;
 
@@ -206,7 +233,7 @@ const game = (function (doc) {
           if (!gameBoard.getGameBoardItem(index)) {
             gameBoard.updateGameBoard(index);
             let box = doc.querySelector(`#${id}`);
-            box.innerHTML = "&#10005;";
+            box.innerHTML = playerOne.marker;
           }
 
           // check if playerOne won
@@ -214,8 +241,35 @@ const game = (function (doc) {
             winnerFound = true;
             playerOneWon = true;
             count = 9;
-            playerOne.score++;
-            xScore.textContent = playerOne.score;
+
+            if (playerOne.marker === "&#10005;") {
+              if (isNaN(Number(xScore.textContent))) {
+                xScore.textContent = 0;
+                xScore.textContent = ++xScore.textContent;
+                playerOne.score = xScore.textContent;
+
+                setXScore(Number(xScore.textContent));
+              } else {
+                xScore.textContent = ++xScore.textContent;
+                playerOne.score = xScore.textContent;
+
+                setXScore(Number(xScore.textContent));
+              }
+            } else {
+              if (isNaN(Number(oScore.textContent))) {
+                oScore.textContent = 0;
+                oScore.textContent = ++oScore.textContent;
+                playerOne.score = oScore.textContent;
+
+                setOScore(Number(oScore.textContent));
+              } else {
+                oScore.textContent = ++oScore.textContent;
+                playerOne.score = oScore.textContent;
+
+                setOScore(Number(oScore.textContent));
+              }
+            }
+
             // highlight winning cells
             let winningCells = updateResult().winningPattern;
 
@@ -242,7 +296,7 @@ const game = (function (doc) {
           if (!gameBoard.getGameBoardItem(index)) {
             gameBoard.updateGameBoard(index);
             let box = doc.querySelector(`#${id}`);
-            box.innerHTML = "&#79;";
+            box.innerHTML = playerTwo.marker; //"&#79;";
           }
 
           // playerTwo.makeMove(getComputerChoice());
@@ -251,8 +305,35 @@ const game = (function (doc) {
             winnerFound = true;
             playerTwoWon = true;
             count = 9;
-            playerTwo.score++;
-            oScore.textContent = playerTwo.score;
+
+            if (playerTwo.marker === "&#79;") {
+              if (isNaN(Number(oScore.textContent))) {
+                oScore.textContent = 0;
+                oScore.textContent = ++oScore.textContent;
+                playerTwo.score = oScore.textContent;
+
+                setOScore(Number(oScore.textContent));
+              } else {
+                oScore.textContent = ++oScore.textContent;
+                playerTwo.score = oScore.textContent;
+
+                setOScore(Number(oScore.textContent));
+              }
+            } else {
+              if (isNaN(Number(xScore.textContent))) {
+                xScore.textContent = 0;
+                xScore.textContent = ++xScore.textContent;
+                playerTwo.score = xScore.textContent;
+
+                setXScore(Number(xScore.textContent));
+              } else {
+                xScore.textContent = ++xScore.textContent;
+                playerTwo.score = xScore.textContent;
+
+                setXScore(Number(xScore.textContent));
+              }
+            }
+
             // highlight winning cells
             let winningCells = updateResult().winningPattern;
             winningCells.forEach((cell) => {
@@ -292,7 +373,7 @@ const game = (function (doc) {
     return { playerOneWon, playerTwoWon, isGameDraw, winningPattern };
   };
 
-  // const resetGameValues
+  // const restartGame
   const restartGame = () => {
     const gameContainer = doc.querySelector(".gameContainer");
     const article = doc.querySelector(".article");
@@ -313,7 +394,11 @@ const game = (function (doc) {
     playerTwoTurn = false;
     playerOneWon = false;
     playerTwoWon = false;
+    playerOne.playerStatus = false;
+    playerTwo.playerStatus = false;
     winningPattern = "";
+    playerTwo.marker = "&#79;";
+    playerOne.marker = "&#10005;";
     gameBoard.resetGameBoard();
     game.playerOne.clearMoves();
     game.playerTwo.clearMoves();
@@ -325,7 +410,19 @@ const game = (function (doc) {
       box.classList.remove("playerOneWon");
       box.style.border = "3px solid #fff";
     });
-    game.play();
+    // game.play();
+  };
+
+  const setXScore = function (score) {
+    XSCORE = score;
+  };
+
+  const setOScore = function (score) {
+    OSCORE = score;
+  };
+
+  const getScore = function () {
+    return { XSCORE, OSCORE };
   };
 
   const checkForWinner = function (player) {
@@ -386,5 +483,6 @@ const game = (function (doc) {
     updateResult,
     displayResultMessage,
     gameIsDraw,
+    getScore,
   };
 })(document);
