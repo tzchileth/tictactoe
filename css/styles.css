@@ -40,8 +40,6 @@ border-radius: 15px;
     grid-template-columns:300px 300px;
     grid-auto-flow: column;
     gap: 100px;
-    /* background-color: rgb(117, 109, 59); */
-
 }
 
 .gameContainer>.firstRow>.left {
