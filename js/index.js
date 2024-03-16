@@ -497,3 +497,6 @@ const game = (function (doc) {
     getScore,
   };
 })(document);
+
+// play the game
+game.play();
