@@ -1,5 +1,4 @@
 // IIFE (module pattern) for gameBoard
-
 const gameBoard = (function () {
   // Initial state of the gameBoard when nobody has played yet.
   let gameBoardArray = [
@@ -33,6 +32,8 @@ const gameBoard = (function () {
   // if it returns false, the next player can play again
   const isGameBoardFilledUp = () =>
     gameBoardArray.every((item) => item === true);
+
+  const isGameBoardBlank = () => gameBoardArray.every((item) => item === false);
 
   // reset gameBoard to default values of false
   const resetGameBoard = () => {
@@ -80,6 +81,7 @@ const gameBoard = (function () {
     resetGameBoard,
     getAvailableBoxes,
     shuffleGameBoard,
+    isGameBoardBlank,
   };
 })();
 
@@ -147,7 +149,6 @@ function createPlayer(marker = "&#10005;") {
   };
 }
 
-// Game: The game is between a human and computer
 const game = (function (doc) {
   const winningMoves = {
     three: [0, 1, 2],
@@ -167,39 +168,6 @@ const game = (function (doc) {
   let oScore;
   let XSCORE = 0;
   let OSCORE = 0;
-
-  // wrap this in a function
-  if (!!doc) {
-    btn = doc.querySelectorAll("button");
-    xButton = doc.querySelector(".xButton");
-    yButton = doc.querySelector(".yButton");
-    xScore = doc.querySelector("#xScore");
-    oScore = doc.querySelector("#oScore");
-  }
-
-  let playerOne = createPlayer(); // update this line to get the marker from the button element
-  let playerTwo = createPlayer("&#79;"); // update this line to get the marker from the button element
-
-  xButton.addEventListener("click", () => {
-    if (!playerOne.playerStatus && !playerTwo.playerStatus) {
-      playerOne.playerStatus = true;
-      playerOne.marker = "&#10005;";
-      playerTwo.marker = "&#79;";
-      game.play();
-    }
-  });
-
-  yButton.addEventListener("click", () => {
-    if (!playerTwo.playerStatus && !playerOne.playerStatus) {
-      playerTwo.playerStatus = true;
-      playerTwo.marker = "&#10005;";
-      playerOne.marker = "&#79;";
-      game.play();
-    }
-  });
-
-  const restart = doc.querySelector("#restart");
-
   let winnerFound = false; // initially no winner yet
   let isGameDraw = false; // initially set to false
   let playerOneTurn = true; // to keep track of whose turn to make a move
@@ -209,17 +177,59 @@ const game = (function (doc) {
   let winningPattern = "";
   let count = 0;
 
+  const restart = doc.querySelector("#restart");
+
+  // wrap this in a function
+  if (!!doc) {
+    btn = doc.querySelectorAll("button");
+    xButton = doc.querySelector(".xButton");
+    oButton = doc.querySelector(".oButton");
+    xScore = doc.querySelector("#xScore");
+    oScore = doc.querySelector("#oScore");
+  }
+
+  let playerOne = createPlayer(); // update this line to get the marker from the button element
+  let playerTwo = createPlayer("&#79;"); // update this line to get the marker from the button element
+
   restart.addEventListener("click", () => {
     restartGame();
   });
 
   const play = () => {
-    console.log(`playerOne: ${playerOne.score}  playerTwo: ${playerTwo.score}`);
+    xButton.addEventListener("click", () => {
+      if (!playerOne.playerStatus && !playerTwo.playerStatus) {
+        playerOne.playerStatus = true;
+        playerOne.marker = "&#10005;";
+        playerTwo.marker = "&#79;";
+        if (count === 0) {
+          game.play();
+        }
+      }
+    });
+
+    oButton.addEventListener("click", () => {
+      if (!playerTwo.playerStatus && !playerOne.playerStatus) {
+        playerTwo.playerStatus = true;
+        playerTwo.marker = "&#10005;";
+        playerOne.marker = "&#79;";
+        if (count === 0) {
+          game.play();
+        }
+      }
+    });
 
     const board = doc.querySelector(".article");
     let index;
 
     board.addEventListener("click", (e) => {
+      if (
+        gameBoard.isGameBoardBlank() &&
+        !playerOne.playerStatus &&
+        !playerTwo.playerStatus
+      ) {
+        playerOne.playerStatus = true;
+      }
+
       let id = e.target.id;
       index = Number(id.slice(1));
 
@@ -410,7 +420,8 @@ const game = (function (doc) {
       box.classList.remove("playerOneWon");
       box.style.border = "3px solid #fff";
     });
-    // game.play();
+
+    game.play();
   };
 
   const setXScore = function (score) {
