@@ -139,7 +139,8 @@ button {
     display: grid;
     grid-template-columns: 300px;
     justify-items: center;
-    color: rgb(44, 4, 4);
-    font-style: italic;
+    color: rgb(255, 255, 255);
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 20px;
 }
