@@ -175,7 +175,7 @@ const game = (function (doc) {
   let playerOneWon = false;
   let playerTwoWon = false;
   let winningPattern = "";
-  let count = 0;
+  let count;
 
   const restart = doc.querySelector("#restart");
 
@@ -186,6 +186,9 @@ const game = (function (doc) {
     oButton = doc.querySelector(".oButton");
     xScore = doc.querySelector("#xScore");
     oScore = doc.querySelector("#oScore");
+
+    xAudio = doc.querySelector("#xAudio");
+    oAudio = doc.querySelector("#oAudio");
   }
 
   let playerOne = createPlayer(); // update this line to get the marker from the button element
@@ -228,12 +231,13 @@ const game = (function (doc) {
         !playerTwo.playerStatus
       ) {
         playerOne.playerStatus = true;
+        count = 0;
       }
 
       let id = e.target.id;
       index = Number(id.slice(1));
 
-      // keep playing game is it's not a tie and there's no winner yet
+      // keep playing game if it's not a tie and there's no winner yet
       if (!winnerFound && count < 10) {
         if (playerOneTurn && !winnerFound) {
           let movesArrayLength = playerOne.movesLength();
@@ -241,6 +245,8 @@ const game = (function (doc) {
 
           // check if move is valid and update board
           if (!gameBoard.getGameBoardItem(index)) {
+            xAudio.play();
+
             gameBoard.updateGameBoard(index);
             let box = doc.querySelector(`#${id}`);
             box.innerHTML = playerOne.marker;
@@ -357,6 +363,7 @@ const game = (function (doc) {
 
           // check that playerTwo has actually played
           if (playerTwo.movesLength() > movesArrayLength) {
+            oAudio.play();
             // set playerTwoTurn to false so that he doesn't make more than one move in his turn
             playerTwoTurn = false;
             // make next player to be player 1
@@ -412,7 +419,6 @@ const game = (function (doc) {
     gameBoard.resetGameBoard();
     game.playerOne.clearMoves();
     game.playerTwo.clearMoves();
-    count = 0;
 
     boxes.forEach((box) => {
       box.textContent = "";
@@ -491,6 +497,8 @@ const game = (function (doc) {
     restartGame,
     playerOne,
     playerTwo,
+    playerOneTurn,
+    playerTwoTurn,
     updateResult,
     displayResultMessage,
     gameIsDraw,
