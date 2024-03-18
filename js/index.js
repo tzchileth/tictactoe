@@ -419,6 +419,7 @@ const game = (function (doc) {
     gameBoard.resetGameBoard();
     game.playerOne.clearMoves();
     game.playerTwo.clearMoves();
+    count = 0;
 
     boxes.forEach((box) => {
       box.textContent = "";
@@ -476,7 +477,7 @@ const game = (function (doc) {
 
   const displayResultMessage = function () {
     if (game.updateResult().isGameDraw) {
-      const myTimeout = setTimeout(gameIsDraw, 5000);
+      const myTimeout = setTimeout(gameIsDraw, 2000);
     }
   };
 
